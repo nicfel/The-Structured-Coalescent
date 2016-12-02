@@ -1,0 +1,25 @@
+# Object files
+.DS_Store
+
+# ignore the following directories
+/esco/bin/
+
+*.state
+
+# ignore all jar files but the esco jar
+colt.jar
+commons-math3-3.1.1.jar
+jblas-1.2.3.jar
+
+# R stuff
+.Rhistory
+
+# Matlab files
+*.m~
+*.mat
+/*/*/untitled.m
+
+# eclipse files
+*.classpath
+*.project
+

@@ -1,0 +1,2 @@
+## How to run the *mtt.xml
+In order for MultiTypeTree to run with its xmls, the mtt.jar file from the /jar/ folder is needed where the mtt package is connected to the esco package such that it can use to java classes from there (The ABCOperator and the MCMC_fixedOperators classes). The xml won't run otherwise.

@@ -1,0 +1,85 @@
+<beast version='2.0' namespace='beast.evolution.alignment:beast.core:beast.core.parameter:beast.evolution.tree:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood:beast.evolution.tree:beast.math.distributions:multitypetreeVolz.distributions:multitypetreeVolz.operators:multitypetreeVolz.util'>
+    
+    
+    <alignment spec="beast.evolution.alignment.Alignment" id="alignment1" dataType="nucleotide">
+        insert_leafs
+    </alignment>
+    
+    
+    
+    
+    <typeTraitSet id="typeTraitSet" spec="TraitSet" traitname="type" value="insert_trait">
+        <taxa spec='TaxonSet' alignment='@alignment1'/>
+    </typeTraitSet>
+    <timeTraitSet spec='TraitSet' id='timeTraitSet' traitname="date-forward"
+        value="insert_times">
+        <taxa spec='TaxonSet' alignment='@alignment1'/>
+    </timeTraitSet>
+    
+    <!-- Migration model -->
+    <migrationModelVolz spec='MigrationModelVolz' id='migModel'>
+        <rateMatrix spec='RealParameter' value="insert_migrationRate" dimension="insert_dimension" id="rateMatrix"/>
+        <popSizes spec='RealParameter' value="insert_coalescentRate" dimension="insert_dimension" id="popSizes"/>
+    </migrationModelVolz>
+    
+    <input spec='StructuredCoalescentTreeDensityVolz' id='treePrior'>
+        <multiTypeTreeVolz idref="tree"/>
+        <migrationModelVolz idref="migModel"/>
+    </input>
+    
+    
+    
+    <run spec="MCMC" id="mcmc" chainLength="1000000" storeEvery="10000">
+        
+        <!-- initialize tree at random according to StCoal  -->
+        
+        <init spec='StructuredCoalescentMultiTypeTreeVolz' id='tree'>
+            <migrationModelVolz spec='MigrationModelVolz'>
+                <rateMatrix spec='RealParameter' value="insert_migrationRate" dimension="insert_dimension"/>
+                <popSizes spec='RealParameter' value="insert_coalescentRate" dimension="insert_dimension"/>
+            </migrationModelVolz>
+            <trait idref='typeTraitSet'/>
+            <trait idref='timeTraitSet'/>
+        </init>
+        
+        
+        <state>
+            <stateNode idref="tree"/>
+            <stateNode idref="rateMatrix"/>
+            <stateNode idref="popSizes"/>
+        </state>
+        
+        <distribution spec='CompoundDistribution' id='posterior'>
+            <distribution idref='treePrior'/>
+        </distribution>
+        
+        
+        <operator id="CoalescentConstantTreeScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0" rootOnly="true"/>
+        <operator id="CoalescentConstantUniformOperator.t:sequences" spec="Uniform" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:sequences" spec="SubtreeSlide" tree="@tree" optimise="true" weight="30.0"/>
+        <operator id="CoalescentConstantNarrow.t:sequences" spec="Exchange" tree="@tree" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:sequences" spec="Exchange" isNarrow="false" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:sequences" spec="WilsonBalding" tree="@tree" weight="3.0"/>
+        
+        
+        <logger logEvery="100" fileName="insert_filename.log">
+            <model idref='posterior'/>
+            <log idref="posterior"/>
+            <log id="TreeHeightLog2" spec="beast.evolution.tree.TreeHeightLogger" tree="@tree"/>
+        </logger>
+        
+        <logger logEvery="10000" fileName="insert_filename.trees" mode="tree">
+            <log idref="treePrior"/>
+        </logger>
+        
+        <logger logEvery="100000">
+            <model idref='posterior'/>
+            <log idref="posterior"/>
+            <log spec="TreeLengthLoggerVolz" tree="@tree" />
+            <log spec='TreePriorLoggerVolz' structuredCoalescentTreeDensityVolz='@treePrior'/>
+        </logger>
+        
+        
+    </run>
+</beast>

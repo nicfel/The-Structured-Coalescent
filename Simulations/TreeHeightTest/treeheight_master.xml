@@ -1,0 +1,54 @@
+<beast version='2.0' namespace='master:master.model:master.steppers:master.conditions:master.postprocessors:master.outputs'>
+    <run spec='InheritanceEnsemble' nTraj='8000'
+        verbosity='2'>
+        
+        <model spec='Model'>
+            <populationType spec='PopulationType' typeName='L' id='L' dim="insert_dimension"/>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Coalescence'>
+                <reaction spec='Reaction' rate="insert_coalescence">
+                    2L[0]:1 -> L[0]:1
+                </reaction>
+                <reaction spec='Reaction' rate="insert_coalescence">
+                    2L[1]:1 -> L[1]:1
+                </reaction>
+                <reaction spec='Reaction' rate="insert_coalescence">
+                    2L[2]:1 -> L[2]:1
+                </reaction>
+            </reactionGroup>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Migration'>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[0] -> L[1]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[0] -> L[2]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[1] -> L[0]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[1] -> L[2]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[2] -> L[0]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[2] -> L[1]
+                </reaction>
+            </reactionGroup>
+            
+        </model>
+        
+        <initialState spec='InitState'>
+insert_lineage
+        </initialState>
+        
+        <lineageEndCondition spec='LineageEndCondition' nLineages="1"/>
+        
+        <output spec='NexusOutput' fileName='insert_filename.tree' collapseSingleChildNodes="true" reverseTime="true"/>
+        
+        
+        
+    </run>
+</beast>

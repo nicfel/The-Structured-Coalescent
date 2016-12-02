@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate="Standard" beautistatus="" namespace="beast.core:beast.evolution.alignment:beast.phylodynamics.epidemiology:beast.phylodynamics.logger:beast.phylodynamics.model:beast.phylodynamics.operators:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+	<data id="sequences" name="alignment">
+		<sequence id="inv1_0" taxon="inv1_0" totalcount="4" value="??"/>
+		<sequence id="inv2_0" taxon="inv2_0" totalcount="4" value="??"/>
+		<sequence id="inv3_0" taxon="inv3_0" totalcount="4" value="??"/>
+		<sequence id="inv4_0" taxon="inv4_0" totalcount="4" value="??"/>
+		<sequence id="inv5_0" taxon="inv5_0" totalcount="4" value="??"/>
+	</data>
+	<run id="mcmc" spec="MCMC" chainLength="1000000">
+		<state id="state" storeEvery="5000">
+			<tree id="tree" name="stateNode"/>
+			<parameter id="popSize" lower="0.0" upper="1000000" name="stateNode">1.0</parameter>
+		</state>
+        
+            
+        <init id="RandomTree.t:sequences" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@tree" taxa="@sequences">
+            <populationModel id="ConstantPopulation" spec="ConstantPopulation">
+                <parameter id="randomPopSize" name="popSize">1</parameter>
+            </populationModel>
+        </init>
+
+ 		<distribution id="posterior" spec="util.CompoundDistribution">
+			<distribution id="prior" spec="util.CompoundDistribution">
+			</distribution>
+			<distribution id="likelihood" spec="util.CompoundDistribution">
+				<distribution id="CoalescentConstant" spec="Coalescent">
+					<populationModel id="Constant" spec="ConstantPopulation" popSize="@popSize"/>
+					<treeIntervals id="TreeIntervals" spec="TreeIntervals" tree="@tree"/>
+				</distribution>  
+			</distribution>
+		</distribution>
+        <operator id="CoalescentConstantTreeScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0" rootOnly="true"/>
+        <operator id="CoalescentConstantUniformOperator.t:sequences" spec="Uniform" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:sequences" spec="SubtreeSlide" tree="@tree" optimise="true" weight="30.0"/>
+        <operator id="CoalescentConstantNarrow.t:sequences" spec="Exchange" tree="@tree" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:sequences" spec="Exchange" isNarrow="false" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:sequences" spec="WilsonBalding" tree="@tree" weight="3.0"/>
+		<logger id="tracelog" fileName="OneDeme_constcoal.xml.log" logEvery="100" model="@posterior" sanitiseHeaders="true" sort="smart">
+			<log idref="posterior"/>
+            <log id="tree_height" spec="beast.evolution.tree.TreeHeightLogger" tree="@tree"/>
+		</logger>
+		<logger id="screenlog" logEvery="1000">
+			<log idref="posterior"/>
+		</logger>
+	</run>
+</beast>

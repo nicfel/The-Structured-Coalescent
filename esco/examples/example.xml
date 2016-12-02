@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.structuredCoalescent.distribution:beast.structuredCoalescent.logger:beast.structuredCoalescent.operator:beast.structuredCoalescent.model:beast.structuredCoalescent.operators:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+	<data id="sequences" name="alignment">
+		<sequence id="inv1loc_0" taxon="inv1loc_0" totalcount="4" value="??"/>
+		<sequence id="inv4loc_0" taxon="inv4loc_0" totalcount="4" value="??"/>
+		<sequence id="inv3loc_0" taxon="inv3loc_0" totalcount="4" value="??"/>
+		<sequence id="inv2loc_0" taxon="inv2loc_0" totalcount="4" value="??"/>
+        <sequence id="inv5loc_0" taxon="inv5loc_0" totalcount="4" value="??"/>
+        <sequence id="inv6loc_0" taxon="inv6loc_0" totalcount="4" value="??"/>
+	</data>
+	<run id="mcmc" spec="MCMC" chainLength="100000">
+		<state id="state" storeEvery="5000">
+			<tree id="tree" name="stateNode"/>
+			<parameter id="coalRates" name="stateNode">0.1 0.1</parameter>
+			<parameter id="migRates" upper="140" name="stateNode">0.1 0.1</parameter>
+		</state>
+		<init spec="beast.util.TreeParser" id="NewickTree.t:Species" adjustTipHeights="true"
+			initial="@tree" taxa="@sequences"
+			IsLabelledNewick="true"
+			newick="(((((inv1loc_0:0.3333,inv2loc_0:0.3333):0.5,inv3loc_0:0.8333):0.8333,inv4loc_0:1.6667):1.6667,inv5loc_0:3.3334):5,inv6loc_0:8.3334);"/>
+ 		<distribution id="posterior" spec="util.CompoundDistribution">
+			<distribution id="prior" spec="util.CompoundDistribution">
+			</distribution>
+			<distribution id="likelihood" spec="util.CompoundDistribution">
+                <!-- use for ESCO -->
+				<distribution id="coalescent" spec="ExactStructuredCoalescent" dim="2">
+					<structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+					<coalescentRates idref="coalRates"/>
+					<migrationRates idref="migRates"/>
+					<parameter id="stepSize" name="timeStep">0.1</parameter>
+				</distribution>
+                <!-- use for LISCO                
+                 <distribution id="coalescent" spec="IndependentStructuredCoalescent" dim="2">
+                    <structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+                    <coalescentRates idref="coalRates"/>
+                    <migrationRates idref="migRates"/>
+                    <parameter id="stepSize" name="timeStep">0.1</parameter>
+                 </distribution>-->
+                <!-- use for SISCO
+                <distribution id="coalescent" spec="ApproximateStructuredCoalescent" dim="2">
+                    <structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+                    <coalescentRates idref="coalRates"/>
+                    <migrationRates idref="migRates"/>
+                    <parameter id="stepSize" name="timeStep">0.1</parameter>
+                </distribution>-->
+			</distribution>
+		</distribution>
+        
+		<operator id="CoalescentScaler" spec="ABCOperator" scaleFactor="1.001" scaleAll="true" parameter="@coalRates" weight="1.0"/>
+        <!-- use for ESCO -->
+        <logger id="treeLogger" fileName="example.trees" logEvery="10" mode="tree">
+            <log id="StructuredTreeLogger" spec="StructuredTreeLogger" exactInput="@coalescent" tree="@tree"/>
+        </logger>
+        <!-- use for LISCO
+        <logger id="treeLogger" fileName="example.trees" logEvery="10" mode="tree">
+            <log id="StructuredTreeLogger" spec="StructuredTreeLogger" independentInput="@coalescent" tree="@tree"/>
+        </logger>-->
+        <!-- use for SISCO
+        <logger id="treeLogger" fileName="example.trees" logEvery="10" mode="tree">
+            <log id="StructuredTreeLogger" spec="StructuredTreeLogger" approximateInput="@coalescent" tree="@tree"/>
+        </logger>-->
+
+		<logger id="tracelog" fileName="example.log" logEvery="1" model="@posterior" sanitiseHeaders="true" sort="smart">
+			<log idref="migRates"/>
+			<log idref="posterior"/>
+		</logger>
+		<logger id="screenlog" logEvery="1">
+            <log idref="coalRates"/>
+			<log idref="posterior"/>
+            <!-- Stops the run after the maximum posterior probability minus lower bound was reached -->
+			<log spec="EndCriterion" posterior="@coalescent" lowerBound=".00000001"/>
+		</logger>
+	</run>
+</beast>

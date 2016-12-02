@@ -1,0 +1,7 @@
+# Object files
+AIV.fasta
+/structcoal/combined/
+/structcoal/individual/*.out
+/structcoal/individual/*sco.trees
+timeStepComparison.m
+/structcoal/lts

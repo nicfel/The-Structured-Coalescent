@@ -1,0 +1,6 @@
+# Ignore everything in this directory
+*
+# Except those files
+!.gitignore
+!rootStateProbabilities_esco.log!rootStateProbabilities_esco.trees!rootStateProbabilities_lisco.log!rootStateProbabilities_lisco.trees!rootStateProbabilities_volz.log!rootStateProbabilities_volz.trees
+!rootStateProbabilities_mtt.log

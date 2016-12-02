@@ -1,0 +1,71 @@
+<beast version='2.0' namespace='master:master.model:master.steppers:master.conditions:master.postprocessors:master.outputs'>
+    <run spec='InheritanceEnsemble' nTraj='8000'
+        verbosity='2'>
+        
+        <model spec='Model'>
+            <populationType spec='PopulationType' typeName='L' id='L' dim="3"/>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Coalescence'>
+                <reaction spec='Reaction' rate="0.5">
+                    2L[0]:1 -> L[0]:1
+                </reaction>
+                <reaction spec='Reaction' rate="1">
+                    2L[1]:1 -> L[1]:1
+                </reaction>
+                <reaction spec='Reaction' rate="2">
+                    2L[2]:1 -> L[2]:1
+                </reaction>
+            </reactionGroup>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Migration'>
+                <reaction spec='Reaction' rate="0.01">
+                    L[0] -> L[1]
+                </reaction>
+                <reaction spec='Reaction' rate="0.02">
+                    L[0] -> L[2]
+                </reaction>
+                <reaction spec='Reaction' rate="0.001">
+                    L[1] -> L[0]
+                </reaction>
+                <reaction spec='Reaction' rate="0.003">
+                    L[1] -> L[2]
+                </reaction>
+                <reaction spec='Reaction' rate="0.01">
+                    L[2] -> L[0]
+                </reaction>
+                <reaction spec='Reaction' rate="0.01">
+                    L[2] -> L[1]
+                </reaction>
+            </reactionGroup>
+            
+        </model>
+        
+        <initialState spec='InitState'>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="0">
+				<population spec='Population' type='@L' location="0"/>
+			</lineageSeedMultiple>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="10">
+				<population spec='Population' type='@L' location="0"/>
+			</lineageSeedMultiple>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="5">
+				<population spec='Population' type='@L' location="0"/>
+			</lineageSeedMultiple>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="1">
+				<population spec='Population' type='@L' location="1"/>
+			</lineageSeedMultiple>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="4">
+				<population spec='Population' type='@L' location="1"/>
+			</lineageSeedMultiple>
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="8">
+				<population spec='Population' type='@L' location="2"/>
+			</lineageSeedMultiple>
+        </initialState>
+        
+        <lineageEndCondition spec='LineageEndCondition' nLineages="1"/>
+        
+        <output spec='NexusOutput' fileName='treeheight_3_2_1_coal_1.000_2.000_4.000_mig_0.010_0.020_0.001_0.003_0.010_0.010_master.tree' collapseSingleChildNodes="true" reverseTime="true"/>
+        
+        
+        
+    </run>
+</beast>

@@ -1,0 +1,41 @@
+<beast version='2.0' namespace='master:master.model:master.steppers:master.conditions:master.postprocessors:master.outputs'>
+    <run spec='InheritanceTrajectory'
+        verbosity='2'>
+        
+        <model spec='Model'>
+            <populationType spec='PopulationType' typeName='L' id='L' dim="2"/>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Coalescence'>
+                <reaction spec='Reaction' rate="1">
+                    2L[0]:1 -> L[0]:1
+                </reaction>
+                <reaction spec='Reaction' rate="1">
+                    2L[1]:1 -> L[1]:1
+                </reaction>
+            </reactionGroup>
+            
+            <reactionGroup spec='ReactionGroup' reactionGroupName='Migration'>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[0] -> L[1]
+                </reaction>
+                <reaction spec='Reaction' rate="insert_migration">
+                    L[1] -> L[0]
+                </reaction>
+            </reactionGroup>
+            
+        </model>
+        
+        <initialState spec='InitState'>
+            <lineageSeedMultiple spec='MultipleIndividuals' copies="4" time="0.0">
+                <population spec='Population' type='@L' location="0"/>
+            </lineageSeedMultiple>
+            <lineageSeedMultiple spec='MultipleIndividuals' copies="4" time="0.0">
+                <population spec='Population' type='@L' location="1"/>
+            </lineageSeedMultiple>
+        </initialState>
+        
+        <lineageEndCondition spec='LineageEndCondition' nLineages="1"/>
+        
+        <output spec='NexusOutput' fileName='insert_filename.tree' collapseSingleChildNodes="true" reverseTime="true"/>
+    </run>
+</beast>

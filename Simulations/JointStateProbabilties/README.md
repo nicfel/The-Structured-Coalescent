@@ -1,0 +1,2 @@
+## Probability of being in a configuration and not having coalesced for 2 lineages
+Running the Matlab file jointStateProbabilities.m will simulate "trees" with 2 leafs both in a different state and then calculates how many times the simulation time resp. tree height was longer than t. I.e. it simulates the probability of the two leafs being in a configuration and not having coalesced after time t. Then it calculates, not simulates, the same probabilities using the ESCO ode and plots them both over time.

@@ -1,0 +1,63 @@
+<beast version='2.0' namespace='beast.evolution.alignment:beast.core:beast.core.parameter:beast.evolution.tree:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood:beast.evolution.migrationmodel:beast.math.distributions:multitypetree.distributions:multitypetree.operators:multitypetree.util'>
+  <alignment spec="beast.evolution.alignment.Alignment" id="alignment">
+            <sequence	id="inv3loc_0"	taxon="inv3loc_0"	value="???"/>
+            <sequence	id="inv4loc_1"	taxon="inv4loc_1"	value="???"/>
+            <sequence	id="inv5loc_1"	taxon="inv5loc_1"	value="???"/>
+            <sequence	id="inv6loc_1"	taxon="inv6loc_1"	value="???"/>
+            <sequence	id="inv2loc_0"	taxon="inv2loc_0"	value="???"/>
+            <sequence	id="inv1loc_0"	taxon="inv1loc_0"	value="???"/>
+  </alignment> 
+  <!-- Probability of tree given migration rates and population sizes -->  
+  <input spec='StructuredCoalescentTreeDensity' id='treePrior'>  
+    <multiTypeTree idref="tree"/>   
+    <migrationModel idref="migModel"/>  
+  </input>
+  <SCMigrationModel spec='SCMigrationModel' id='migModel'>
+      <rateMatrix spec='RealParameter' value="0.001 0.01" dimension="2" id="rateMatrix"/>   
+      <popSizes spec='RealParameter' value="0.5 0.25" dimension="2" id="popSizes"/>
+  </SCMigrationModel>
+  <run spec="beast.structuredCoalescent.operator.MCMC_fixedOperators" id="MCMC" chainLength="234000000" storeEvery="10000">
+    <!-- Add a Tree as initial  --> 
+    <init spec='MultiTypeTreeFromUntypedNewick' id='tree' adjustTipHeights="false" migrationModel="@migModel" value="(((inv3loc_0:2.5,inv4loc_1:8):4,(inv5loc_1:10,inv6loc_1:6):5.8):27,(inv2loc_0:10,inv1loc_0:20):22):0.0;">
+        <trait spec='TraitSet' id='type'
+            traitname="type" value="inv3loc_0=0,inv4loc_1=1,inv5loc_1=1,inv6loc_1=1,inv2loc_0=0,inv1loc_0=0">
+            <taxa spec='TaxonSet' alignment='@alignment'/>
+        </trait>
+    </init>
+    <state>
+      <stateNode idref="tree"/> 
+      <stateNode idref="rateMatrix"/>   
+      <stateNode idref="popSizes"/> 
+    </state>
+    <distribution spec='CompoundDistribution' id='posterior'> 
+      <distribution idref='treePrior'/> 
+    </distribution>
+    <!-- Multi-type tree operators -->
+    <operator spec="NodeRetype" id="NR"
+       weight="999999" multiTypeTree="@tree"
+       migrationModel="@migModel"/> 
+		<operator id="CoalescentConstantTreeRootScaler.t:sequences" spec="beast.structuredCoalescent.operator.ABCOperator" onlyScale="0" scaleFactor="1.02" multiply="true" parameter="@rateMatrix" weight="1.0"/>
+    <!-- Loggers -->  
+    <logger logEvery="500" fileName="rootStateProbabilities_mtt.log">
+      <model idref='posterior'/>
+      <log idref="posterior"/>  
+      <log idref="rateMatrix"/>  
+<!--      <log id="migModelLogger" spec="MigrationModelLogger" migrationModel="@migModel" multiTypeTree="@tree"/>     -->
+<!--      <log spec='TypeChangeCounts' multiTypeTree="@tree" migrationModel="@migModel" id="typeChangeCounts" />-->
+<!--      <log spec='Sum' arg="@typeChangeCounts" id="totalTypeChanges" /> -->
+      <log spec='TreeRootTypeLogger' multiTypeTree="@tree"/>
+    </logger>
+    
+    <logger logEvery="500" fileName="rootStateProbabilities_mtt.trees" mode="tree">
+        <log spec='TypedNodeTreeLogger' multiTypeTree="@tree"/>
+    </logger>
+    
+    <logger logEvery="50000">   
+      <model idref='posterior'/>
+      <log idref="posterior"/>  
+      <log idref="rateMatrix"/>
+<!--      <log spec='TreeHeightLogger' tree='@tree'/> -->
+<!--      <log idref="migModelLogger"/> -->
+    </logger>
+  </run>   
+</beast>   

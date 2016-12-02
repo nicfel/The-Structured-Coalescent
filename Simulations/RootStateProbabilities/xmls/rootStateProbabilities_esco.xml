@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.structuredCoalescent.distribution:beast.structuredCoalescent.logger:beast.structuredCoalescent.operator:beast.structuredCoalescent.model:beast.structuredCoalescent.operators:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+	<data id="sequences" name="alignment">
+		<sequence id="inv3loc_0" taxon="inv3loc_0" totalcount="4" value="??"/>
+		<sequence id="inv4loc_1" taxon="inv4loc_1" totalcount="4" value="??"/>
+		<sequence id="inv5loc_1" taxon="inv5loc_1" totalcount="4" value="??"/>
+		<sequence id="inv6loc_1" taxon="inv6loc_1" totalcount="4" value="??"/>
+		<sequence id="inv2loc_0" taxon="inv2loc_0" totalcount="4" value="??"/>
+		<sequence id="inv1loc_0" taxon="inv1loc_0" totalcount="4" value="??"/>
+	</data>
+	<run id="mcmc" spec="MCMC" chainLength="233">
+		<state id="state" storeEvery="5000">
+			<tree id="tree" name="stateNode"/>
+			<!-- ARUDSIR STATE NODES-->
+			<parameter id="coalRates" name="stateNode">2 4</parameter>
+			<parameter id="migRates" upper="140" name="stateNode">0.001 0.01</parameter>
+		</state>
+		<init spec="beast.util.TreeParser" id="NewickTree.t:Species"
+			initial="@tree" taxa="@sequences" adjustTipHeights="false"
+			IsLabelledNewick="true"
+			newick="(((inv3loc_0:2.5,inv4loc_1:8):4,(inv5loc_1:10,inv6loc_1:6):5.8):27,(inv2loc_0:10,inv1loc_0:20):22):0.0;"/>
+ 		<distribution id="posterior" spec="util.CompoundDistribution">
+			<distribution id="prior" spec="util.CompoundDistribution">
+				<!-- ARUDSIR Priors-->
+			</distribution>
+			<distribution id="likelihood" spec="util.CompoundDistribution">
+				<distribution id="coalescent" spec="ExactStructuredCoalescent" dim="2">
+					<structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+					<coalescentRates idref="coalRates"/>
+					<migrationRates idref="migRates"/>
+					<parameter id="stepSize" name="timeStep">0.01</parameter>
+				</distribution>
+			</distribution>
+		</distribution>
+		<operator id="ABCOperator" spec="ABCOperator" onlyScale="0" scaleFactor="1.02" multiply="true" parameter="@migRates" weight="1.0"/>
+		<logger id="tracelog" fileName="rootStateProbabilities_esco.log" logEvery="1" model="@posterior" sanitiseHeaders="true" sort="smart">
+			<log idref="migRates"/>
+			<log idref="coalRates"/>
+			<log idref="posterior"/>
+		</logger>
+		<logger id="probtreelog" fileName="rootStateProbabilities_esco.trees" logEvery="1" mode="tree">
+			<log id="logTrees" spec="StructuredTreeLogger" tree="@tree" exactDensity="@coalescent"  maxState="false" conditionalStateProbs="false"/>
+		</logger>
+		<logger id="screenlog" logEvery="1">
+			<log idref="posterior"/>
+		</logger>
+	</run>
+</beast>
