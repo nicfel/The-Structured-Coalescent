@@ -16,7 +16,7 @@ this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 
 # read in the mcc tree
-tr <- read.nexus(file="./structcoal/lisco_mcc.trees")
+tr <- read.nexus(file="./structcoal/sisco_mcc.trees")
 
 # ladderize the tree
 tr <- ladderize(tr, right = F)
@@ -75,9 +75,9 @@ for (i in 1: length(tip_col)){
 library(phytools)
 root_heigth <- max(nodeHeights(tr))
 
-# plot the lisco mcc tree (doesn't really matter which mcc tree is used)
+# plot the sisco mcc tree (doesn't really matter which mcc tree is used)
 setEPS()
-postscript("../text/figures/AIV/lisco_mcc.eps",width=5, height=5)
+postscript("../text/figures/AIV/sisco_mcc.eps",width=5, height=5)
 plot(tr,show.tip.label=F,root.edge = T)
 tiplabels(pch = 19, col = tip_col, adj = 0.5, cex = 0.3)
 # add a scale with the most recent sample being sampled in 2012.47123287671
@@ -98,25 +98,25 @@ t <- read.table(file="rootStates.txt", header=TRUE, sep="\t")
 
 
 # complicated way of reading in the data one by one to plot them in ggplot
-plot.t1_lisco <- data.frame(place="alaska",prob=t$alaska[1],method = "LISCO",x=1)
+plot.t1_masco <- data.frame(place="alaska",prob=t$alaska[1],method = "MASCO",x=1)
 plot.t1_volz <- data.frame(place="alaska",prob=t$alaska[2],method = "SISCO",x=1)
-plot.t2_lisco <- data.frame(place="northwest",prob=t$northwest[1],method = "LISCO",x=2)
+plot.t2_masco <- data.frame(place="northwest",prob=t$northwest[1],method = "MASCO",x=2)
 plot.t2_volz <- data.frame(place="northwest",prob=t$northwest[2],method = "SISCO",x=2)
-plot.t3_lisco <- data.frame(place="northeast",prob=t$northeast[1],method = "LISCO",x=3)
+plot.t3_masco <- data.frame(place="northeast",prob=t$northeast[1],method = "MASCO",x=3)
 plot.t3_volz <- data.frame(place="northeast",prob=t$northeast[2],method = "SISCO",x=3)
-plot.t4_lisco <- data.frame(place="southeast",prob=t$southeast[1],method = "LISCO",x=4)
+plot.t4_masco <- data.frame(place="southeast",prob=t$southeast[1],method = "MASCO",x=4)
 plot.t4_volz <- data.frame(place="southeast",prob=t$southeast[2],method = "SISCO",x=4)
-plot.t5_lisco <- data.frame(place="eastcoast",prob=t$eastcoast[1],method = "LISCO",x=5)
+plot.t5_masco <- data.frame(place="eastcoast",prob=t$eastcoast[1],method = "MASCO",x=5)
 plot.t5_volz <- data.frame(place="eastcoast",prob=t$eastcoast[2],method = "SISCO",x=5)
-plot.t6_lisco <- data.frame(place="northmideast",prob=t$northmideast[1],method = "LISCO",x=6)
+plot.t6_masco <- data.frame(place="northmideast",prob=t$northmideast[1],method = "MASCO",x=6)
 plot.t6_volz <- data.frame(place="northmideast",prob=t$northmideast[2],method = "SISCO",x=6)
-plot.t7_lisco <- data.frame(place="center",prob=t$center[1],method = "LISCO",x=7)
+plot.t7_masco <- data.frame(place="center",prob=t$center[1],method = "MASCO",x=7)
 plot.t7_volz <- data.frame(place="center",prob=t$center[2],method = "SISCO",x=7)
 
-plot.t_lisco <- rbind(plot.t1_lisco,plot.t2_lisco,
-                plot.t3_lisco,plot.t4_lisco,
-                plot.t5_lisco,plot.t6_lisco,
-                plot.t7_lisco)
+plot.t_masco <- rbind(plot.t1_masco,plot.t2_masco,
+                plot.t3_masco,plot.t4_masco,
+                plot.t5_masco,plot.t6_masco,
+                plot.t7_masco)
 plot.t_sisco <- rbind(plot.t1_volz,plot.t2_volz,
                 plot.t3_volz,plot.t4_volz,
                 plot.t5_volz,plot.t6_volz,
@@ -132,8 +132,8 @@ blank_theme <- theme_minimal()+
     plot.title=element_text(size=14, face="bold")
   )
 
-pie_lisco <- ggplot(plot.t_lisco, aes(x="", y=prob*100, fill=place)) + geom_bar(stat="identity",width=1) 
-pie_lisco <- pie_lisco + coord_polar(theta = "y") +
+pie_masco <- ggplot(plot.t_masco, aes(x="", y=prob*100, fill=place)) + geom_bar(stat="identity",width=1) 
+pie_masco <- pie_masco + coord_polar(theta = "y") +
   scale_fill_manual("",values = c("alaska" = alaska,
                                   "northwest" = northwest,
                                   "northeast" = northeast,
@@ -141,7 +141,7 @@ pie_lisco <- pie_lisco + coord_polar(theta = "y") +
                                   "eastcoast" = eastcoast,
                                   "northmideast" = northmideast,
                                   "center" = center)) +  blank_theme
-plot(pie_lisco)
+plot(pie_masco)
 
 pie_sisco <- ggplot(plot.t_sisco, aes(x="", y=prob*100, fill=place)) + geom_bar(stat="identity",width=1) 
 pie_sisco <- pie_sisco + coord_polar(theta = "y") +
@@ -155,8 +155,8 @@ pie_sisco <- pie_sisco + coord_polar(theta = "y") +
 plot(pie_sisco)
 
 
-# print the lisco and sisco pies
-ggsave(plot=pie_lisco,"../text/figures/AIV/RootStatesLisco.eps",width=5, height=5)
+# print the masco and sisco pies
+ggsave(plot=pie_masco,"../text/figures/AIV/RootStatesMasco.eps",width=5, height=5)
 
 ggsave(plot=pie_sisco,"../text/figures/AIV/RootStatesSisco.eps",width=5, height=5)
 
@@ -181,7 +181,7 @@ p_leg <- ggplot()+
   theme(
         axis.ticks.x=element_blank(),
         axis.title.x=element_text(face = "bold", size = 20),
-        legend.position="bottom") + xlab("A B C LISCO SISCO") +
+        legend.position="bottom") + xlab("A B C MASCO SISCO") +
   scale_colour_manual("",values = c("Alaska" = alaska,
                                     "North West" = northwest,
                                     "North East" = northeast,
@@ -208,25 +208,25 @@ ggsave(plot=p_leg,"../text/figures/AIV/legend.eps",width=5, height=2)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Read in all the log files of the 3 different runs
-log_lisco1 <- read.table(file="./structcoal/individual/AIV_1lisco.log", header=TRUE, sep="\t")
-log_lisco2 <- read.table(file="./structcoal/individual/AIV_2lisco.log", header=TRUE, sep="\t")
-log_lisco3 <- read.table(file="./structcoal/individual/AIV_3lisco.log", header=TRUE, sep="\t")
+log_masco1 <- read.table(file="./structcoal/individual/AIV_1masco.log", header=TRUE, sep="\t")
+log_masco2 <- read.table(file="./structcoal/individual/AIV_2masco.log", header=TRUE, sep="\t")
+log_masco3 <- read.table(file="./structcoal/individual/AIV_3masco.log", header=TRUE, sep="\t")
 log_sisco1 <- read.table(file="./structcoal/individual/AIV_1sisco.log", header=TRUE, sep="\t")
 log_sisco2 <- read.table(file="./structcoal/individual/AIV_2sisco.log", header=TRUE, sep="\t")
 log_sisco3 <- read.table(file="./structcoal/individual/AIV_3sisco.log", header=TRUE, sep="\t")
 
 # Combine the legends after a burn in of 10%
-log_lisco <- rbind(log_lisco1[40:length(log_lisco3$Sample),],
-                   log_lisco2[40:length(log_lisco3$Sample),],
-                   log_lisco3[40:length(log_lisco3$Sample),])
-log_sisco <- rbind(log_sisco1[40:length(log_lisco3$Sample),],
-                   log_sisco2[40:length(log_lisco3$Sample),],
-                   log_sisco3[40:length(log_lisco3$Sample),])
+log_masco <- rbind(log_masco1[40:length(log_masco3$Sample),],
+                   log_masco2[40:length(log_masco3$Sample),],
+                   log_masco3[40:length(log_masco3$Sample),])
+log_sisco <- rbind(log_sisco1[40:length(log_masco3$Sample),],
+                   log_sisco2[40:length(log_masco3$Sample),],
+                   log_sisco3[40:length(log_masco3$Sample),])
 
-log_lisco$method = "LISCO"
+log_masco$method = "MASCO"
 log_sisco$method = "SISCO"
 
-log <- rbind(log_lisco, log_sisco)
+log <- rbind(log_masco, log_sisco)
   
   
 # plot the tree height distributions and save as eps

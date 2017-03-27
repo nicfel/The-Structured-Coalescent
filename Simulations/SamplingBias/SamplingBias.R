@@ -42,10 +42,10 @@ for (i in seq(1,length(esco),1)){
   t_esco2 <- read.table(filename2, header=TRUE, sep="\t")
   t_esco3 <- read.table(filename3, header=TRUE, sep="\t")
   
-  # Read in the lisco *.logs
-  t_lisco1 <- read.table(gsub("esco","lisco",filename1), header=TRUE, sep="\t")
-  t_lisco2 <- read.table(gsub("esco","lisco",filename2), header=TRUE, sep="\t")
-  t_lisco3 <- read.table(gsub("esco","lisco",filename3), header=TRUE, sep="\t")
+  # Read in the masco *.logs
+  t_masco1 <- read.table(gsub("esco","masco",filename1), header=TRUE, sep="\t")
+  t_masco2 <- read.table(gsub("esco","masco",filename2), header=TRUE, sep="\t")
+  t_masco3 <- read.table(gsub("esco","masco",filename3), header=TRUE, sep="\t")
   
   # Read in the sisco *.logs
   t_sisco1 <- read.table(gsub("esco","sisco",filename1), header=TRUE, sep="\t")
@@ -64,10 +64,10 @@ for (i in seq(1,length(esco),1)){
   t_esco3 <- t_esco3[-seq(1,ceiling(length(t_esco3$migRates1)/10)), ]
   t_esco = rbind(t_esco1,t_esco2,t_esco3)
   
-  t_lisco1 <- t_lisco1[-seq(1,ceiling(length(t_lisco1$migRates1)/10)), ]
-  t_lisco2 <- t_lisco2[-seq(1,ceiling(length(t_lisco2$migRates1)/10)), ]
-  t_lisco3 <- t_lisco3[-seq(1,ceiling(length(t_lisco3$migRates1)/10)), ]
-  t_lisco = rbind(t_lisco1,t_lisco2,t_lisco3) 
+  t_masco1 <- t_masco1[-seq(1,ceiling(length(t_masco1$migRates1)/10)), ]
+  t_masco2 <- t_masco2[-seq(1,ceiling(length(t_masco2$migRates1)/10)), ]
+  t_masco3 <- t_masco3[-seq(1,ceiling(length(t_masco3$migRates1)/10)), ]
+  t_masco = rbind(t_masco1,t_masco2,t_masco3) 
   
   t_sisco1 <- t_sisco1[-seq(1,ceiling(length(t_sisco1$migRates1)/10)), ]
   t_sisco2 <- t_sisco2[-seq(1,ceiling(length(t_sisco2$migRates1)/10)), ]
@@ -76,7 +76,7 @@ for (i in seq(1,length(esco),1)){
 
   # calculate ess values
   esco_ess <- effectiveSize(t_esco)
-  lisco_ess <- effectiveSize(t_lisco)
+  masco_ess <- effectiveSize(t_masco)
   sisco_ess <- effectiveSize(t_sisco)
   
   # Check if any ESS value calculated by the coda package is below 200
@@ -86,9 +86,9 @@ for (i in seq(1,length(esco),1)){
     print("esco ESS value to low")
     print(sprintf("ESS value is %f for file %s",min(esco_ess[2:6]),filename1))
   }
-  if (min(lisco_ess[2:6])<200){
-    print("lisco ESS value to low")
-    print(sprintf("ESS value is %f for file %s",min(lisco_ess[2:6]),filename1))
+  if (min(masco_ess[2:6])<200){
+    print("masco ESS value to low")
+    print(sprintf("ESS value is %f for file %s",min(masco_ess[2:6]),filename1))
   }
   if (min(sisco_ess[2:6])<200){
     print("sisco ESS value to low")
@@ -101,16 +101,16 @@ for (i in seq(1,length(esco),1)){
     mig_rate <- data.frame(bias=as.numeric(bias), migrationrate=as.numeric(migration), 
                            esco_mig1=mean(t_esco$migRates1), esco_mig2=mean(t_esco$migRates2),
                            esco_coal1=mean(t_esco$coalRates1), esco_coal2=mean(t_esco$coalRates2),
-                           lisco_mig1=mean(t_lisco$migRates1), lisco_mig2=mean(t_lisco$migRates2),
-                           lisco_coal1=mean(t_lisco$coalRates1), lisco_coal2=mean(t_lisco$coalRates2),
+                           masco_mig1=mean(t_masco$migRates1), masco_mig2=mean(t_masco$migRates2),
+                           masco_coal1=mean(t_masco$coalRates1), masco_coal2=mean(t_masco$coalRates2),
                            sisco_mig1=mean(t_sisco$migRates1), sisco_mig2=mean(t_sisco$migRates2),
                            sisco_coal1=mean(t_sisco$coalRates1), sisco_coal2=mean(t_sisco$coalRates2))
   }else{
     new.mig_rate <- data.frame(bias=as.numeric(bias), migrationrate=as.numeric(migration), 
                            esco_mig1=mean(t_esco$migRates1), esco_mig2=mean(t_esco$migRates2),
                            esco_coal1=mean(t_esco$coalRates1), esco_coal2=mean(t_esco$coalRates2),
-                           lisco_mig1=mean(t_lisco$migRates1), lisco_mig2=mean(t_lisco$migRates2),
-                           lisco_coal1=mean(t_lisco$coalRates1), lisco_coal2=mean(t_lisco$coalRates2),
+                           masco_mig1=mean(t_masco$migRates1), masco_mig2=mean(t_masco$migRates2),
+                           masco_coal1=mean(t_masco$coalRates1), masco_coal2=mean(t_masco$coalRates2),
                            sisco_mig1=mean(t_sisco$migRates1), sisco_mig2=mean(t_sisco$migRates2),
                            sisco_coal1=mean(t_sisco$coalRates1), sisco_coal2=mean(t_sisco$coalRates2))
     mig_rate <- rbind(mig_rate, new.mig_rate)
@@ -126,11 +126,11 @@ for (i in seq(1,length(esco),1)){
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# lisco data
-lisco1 = data.frame(bias = mig_rate$bias*0, rate=mig_rate$lisco_mig1, 
+# masco data
+masco1 = data.frame(bias = mig_rate$bias*0, rate=mig_rate$masco_mig1, 
                     facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                     facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
-lisco2 = data.frame(bias = mig_rate$bias*0+1, rate=mig_rate$lisco_mig2, 
+masco2 = data.frame(bias = mig_rate$bias*0+1, rate=mig_rate$masco_mig2, 
                     facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                     facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
 # esco data
@@ -148,26 +148,26 @@ sisco2 = data.frame(bias = mig_rate$bias*0+5, rate=mig_rate$sisco_mig2,
                    facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                    facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
 esco = rbind(esco1, esco2)
-lisco = rbind(lisco1, lisco2)
+masco = rbind(masco1, masco2)
 sisco = rbind(sisco1, sisco2)
 
 esco$facet_posy <- factor(esco$facet_posy,
                           levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
-lisco$facet_posy <- factor(lisco$facet_posy,
+masco$facet_posy <- factor(masco$facet_posy,
                            levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
 sisco$facet_posy <- factor(sisco$facet_posy,
                           levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
 
 
 p_mig <- ggplot()+
-  geom_violin(data=lisco, aes(factor(bias),rate,color="LISCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
+  geom_violin(data=masco, aes(factor(bias),rate,color="MASCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   geom_violin(data=esco, aes(factor(bias),rate,color="ESCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   geom_violin(data=sisco, aes(factor(bias),rate,color="SISCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   facet_grid(facet_posy ~ facet_posx,scales = "free_y") + scale_y_log10() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()) + ylab("") +
-  scale_colour_manual("",values = c("ESCO" = col3, "LISCO" = col4, "SISCO" = col2)) 
+  scale_colour_manual("",values = c("ESCO" = col3, "MASCO" = col4, "SISCO" = col2)) 
 plot(p_mig)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -176,11 +176,11 @@ plot(p_mig)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# lisco data
-lisco1 = data.frame(bias = mig_rate$bias*0, rate=mig_rate$lisco_coal1, 
+# masco data
+masco1 = data.frame(bias = mig_rate$bias*0, rate=mig_rate$masco_coal1, 
                    facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                    facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
-lisco2 = data.frame(bias = mig_rate$bias*0+1, rate=mig_rate$lisco_coal2, 
+masco2 = data.frame(bias = mig_rate$bias*0+1, rate=mig_rate$masco_coal2, 
                    facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                    facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
 # esco data
@@ -198,25 +198,25 @@ sisco2 = data.frame(bias = mig_rate$bias*0+5, rate=mig_rate$sisco_coal2,
                    facet_posx=sprintf("sample numbers: %d & %d",mig_rate$bias,100-mig_rate$bias), 
                    facet_posy=sprintf("migration rate = %g",mig_rate$migrationrate))
 esco = rbind(esco1, esco2)
-lisco = rbind(lisco1, lisco2)
+masco = rbind(masco1, masco2)
 sisco = rbind(sisco1, sisco2)
 
 esco$facet_posy <- factor(esco$facet_posy,
                        levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
-lisco$facet_posy <- factor(lisco$facet_posy,
+masco$facet_posy <- factor(masco$facet_posy,
                           levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
 sisco$facet_posy <- factor(sisco$facet_posy,
                           levels = c("migration rate = 1", "migration rate = 0.1", "migration rate = 0.01"))
 
 p_coal <- ggplot() +
-  geom_violin(data=lisco, aes(factor(bias),rate,color="LISCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
+  geom_violin(data=masco, aes(factor(bias),rate,color="MASCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   geom_violin(data=esco, aes(factor(bias),rate,color="ESCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   geom_violin(data=sisco, aes(factor(bias),rate,color="SISCO"),draw_quantiles = c(0.25, 0.5, 0.75),adjust = 2) +
   facet_grid(facet_posy ~ facet_posx,scales = "free_y") + scale_y_log10() +
   theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
         axis.ticks.x=element_blank()) + ylab("") +
-  scale_colour_manual("",values = c("ESCO" = col3, "LISCO" = col4, "SISCO" = col2)) 
+  scale_colour_manual("",values = c("ESCO" = col3, "MASCO" = col4, "SISCO" = col2)) 
 plot(p_coal)
 
 ggsave(plot=p_mig,"../../text/figures/SamplingBias/SamplingBiasMigrationRates.eps",width=10, height=4.5)

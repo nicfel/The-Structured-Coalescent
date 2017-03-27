@@ -94,10 +94,10 @@ fclose(f_trees);
 fclose(f_log);
 
 %% Analyse the marginal state probabilities calculated
-% using Lisco
+% using Masco
 
-f_trees = fopen(sprintf('out/%s_lisco.trees',filename),'r');
-f_log = fopen(sprintf('out/%s_lisco.log',filename),'r');
+f_trees = fopen(sprintf('out/%s_masco.trees',filename),'r');
+f_log = fopen(sprintf('out/%s_masco.log',filename),'r');
 
 % read the trees and log files until theactual data is reached
 c = true;
@@ -117,8 +117,8 @@ while c
     end
 end
 
-Lisco.migRate = zeros(0,1);
-Lisco.nodeProbs = zeros(0,2*nrLeafs-1);
+Masco.migRate = zeros(0,1);
+Masco.nodeProbs = zeros(0,2*nrLeafs-1);
 
 % Actually read in data
 while isempty(strfind(line_tree,'End;'))
@@ -126,7 +126,7 @@ while isempty(strfind(line_tree,'End;'))
     log_tmp = strsplit(line_log,'\t');
     
     % Save the migration rates
-    Lisco.migRate(end+1,1) = str2double(log_tmp{2});
+    Masco.migRate(end+1,1) = str2double(log_tmp{2});
     
     % Get the state probabilities
     tree = trees_tmp{end-1};
@@ -139,7 +139,7 @@ while isempty(strfind(line_tree,'End;'))
         node_probs(i-1) = str2double(node_probs_tmp{1});
     end    
     
-    Lisco.nodeProbs(end+1,:) = node_probs;
+    Masco.nodeProbs(end+1,:) = node_probs;
     
     line_tree = fgets(f_trees);
     line_log = fgets(f_log);
@@ -204,11 +204,11 @@ fclose(f_log);
 
 % print the analysis to file such that one can plot it later in R
 f = fopen('rootStateProbabilities.txt','w');
-fprintf(f, 'migrationrate\tMTT\tesco\tLisco\tSisco\n');
+fprintf(f, 'migrationrate\tMTT\tesco\tMasco\tSisco\n');
 for i = 1 : length(Esco.migRate)-1
     fprintf('%f\t%f\n',MTT.migRate(i),Esco.migRate(i))
     fprintf(f, '%f\t%f\t%f\t%f\t%f\n',Esco.migRate(i),1-MTT.nodeProbs(i),...
-        Esco.nodeProbs(i,end),Lisco.nodeProbs(i,end),Sisco.nodeProbs(i,end));
+        Esco.nodeProbs(i,end),Masco.nodeProbs(i,end),Sisco.nodeProbs(i,end));
 end
 fclose(f);
 

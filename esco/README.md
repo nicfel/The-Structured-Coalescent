@@ -75,6 +75,7 @@ the entry *spec="IndependentStructuredCoalescent"* tells BEAST to use ESCO as a 
 
 ~~~
 ExactStructuredCoalescent (for ESCO)
+Masco (for MASCO)
 IndependentStructuredCoalescent (for LISCO)
 ApproximateStructuredCoalescent (for SISCO)
 ~~~
@@ -140,6 +141,7 @@ Depending on which coalescent approach is defined as a structured coalescent wit
 
 ~~~
 ESCO -> exactDensity
+MASCO -> mascoDensity
 LISCO -> independentDensity
 SISCO -> approximateDensity
 ~~~

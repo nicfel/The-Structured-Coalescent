@@ -28,13 +28,13 @@ col3 <- rgb(red=0.3010, green=0.7450,blue=0.9330)
 p <- ggplot(data=stateProbs)+
   geom_line(aes(color="MultiTypeTree",x=migrationrate,y=MTT),size=2) +
   geom_line(aes(color="ESCO",x=migrationrate,y=esco),size=2,linetype="longdash") +
-  geom_line(aes(color="LISCO",x=migrationrate,y=Lisco),size=2,linetype="dashed") +
+  geom_line(aes(color="MASCO",x=migrationrate,y=Masco),size=2,linetype="dashed") +
   geom_line(aes(color="SISCO",x=migrationrate,y=Sisco),size=2) + 
   xlab("migration rate     to     ") + ylab("P(     )") +
   scale_x_log10(breaks=c(0.001,0.01,0.1)) +
-  scale_colour_manual("",values = c("MultiTypeTree"=col1, "ESCO"=col3,"LISCO"=col4,"SISCO"=col2),
-                      breaks=c("MultiTypeTree", "ESCO", "LISCO", "SISCO")) 
+  scale_colour_manual("",values = c("MultiTypeTree"=col1, "ESCO"=col3,"MASCO"=col4,"SISCO"=col2),
+                      breaks=c("MultiTypeTree", "ESCO", "MASCO", "SISCO")) 
 plot(p)
-ggsave(plot=p,"../../text/figures/RootStateProbabilities/rootStateProbabilties.eps",width=7, height=5)
+ggsave(plot=p,"../../text/figures/RootStateProbabilities/rootStateProbabilties.eps",width=4.5, height=2.5)
 
 

@@ -10,9 +10,9 @@ lineages = [3 2 1];
 % define the pairwise coalescent rate in each deme
 coalrate = [1 2 4];
 % define all the migration rates between demes
-migrate = [0.01 0.02 0.001 0.003 0.01 0.01];
+migrate = [1 2 0.1 0.3 1 1]*0.01;
 %define all the sampling time of the lineages
-samplingtimes = [0 10 5 1 4 8];
+samplingtimes = [0 1 2 1 0 1];
 
 %Creates all the xmls needed to compare tree height estimates
 % %% make basta files
@@ -129,6 +129,27 @@ for l = 1 : length(temp_lines)
 end
 fclose(p); %close file again
 
+
+%% convert esco to masco files
+
+
+
+f = fopen(sprintf('xmls/%s_esco.xml',name),'r');
+g = fopen(sprintf('xmls/%s_masco.xml',name),'w');
+while ~feof(f)
+    line = fgets(f);
+    if ~isempty(strfind(line,'ExactStructuredCoalescent'))
+        fprintf(g, '%s', strrep(line,'ExactStructuredCoalescent','Masco'));
+    elseif ~isempty(strfind(line,'_esco.'))
+        fprintf(g, '%s', strrep(line,'_esco.','_masco.'));
+    elseif ~isempty(strfind(line,'exactDensity'))
+        fprintf(g, '%s', strrep(line,'exactDensity','mascoDensity'));
+    else
+        fprintf(g, '%s', line);
+    end
+end
+fclose(f);
+fclose(g);
 
 %% convert esco to lisco files, the structured coalescent assuming lineages
 % to be independent

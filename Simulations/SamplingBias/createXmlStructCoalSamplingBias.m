@@ -92,10 +92,10 @@ for i = 1 : length(tree_files)
         fprintf(g,' \t\t<distribution id="posterior" spec="util.CompoundDistribution">\n');
         fprintf(g,'\t\t\t<distribution id="prior" spec="util.CompoundDistribution">\n');
         fprintf(g,'\t\t\t\t<distribution spec=''beast.math.distributions.Prior'' x="@coalRates">\n');
-        fprintf(g,'\t\t\t\t\t<distr spec="beast.math.distributions.Exponential"  mean="2"/>\n');
+        fprintf(g,'\t\t\t\t\t<distr spec="beast.math.distributions.Exponential"/>\n');
         fprintf(g,'\t\t\t\t</distribution>\n');
         fprintf(g,'\t\t\t\t<distribution spec=''beast.math.distributions.Prior'' x="@migRates">\n');
-        fprintf(g,'\t\t\t\t\t<distr spec="beast.math.distributions.Exponential"  mean="%f"/>\n', migrate);
+        fprintf(g,'\t\t\t\t\t<distr spec="beast.math.distributions.Exponential"/>\n');
         fprintf(g,'\t\t\t\t</distribution>\n');
         fprintf(g,'\t\t\t</distribution>\n');
         fprintf(g,'\t\t\t<distribution id="likelihood" spec="util.CompoundDistribution">\n');
@@ -137,6 +137,29 @@ for i = 1 : length(iscoxmls)
             fprintf(g, '%s', strrep(line,'ExactStructuredCoalescent"','IndependentStructuredCoalescent"'));
         elseif ~isempty(strfind(line,'esco.log'))
             fprintf(g, '%s', strrep(strrep(line,'esco.log','lisco.log'),'logEvery="100"','logEvery="200"'));
+        elseif ~isempty(strfind(line,'name="timeStep">0.001'))
+            fprintf(g, '%s', strrep(line,'name="timeStep">0.001','name="timeStep">0.01'));
+        else
+            fprintf(g, '%s', line);
+        end
+    end
+    fclose(f);
+    fclose(g);
+end
+%% make masco files
+iscoxmls = dir('xmls/*esco.xml');
+
+for i = 1 : length(iscoxmls)
+    f = fopen(sprintf('xmls/%s',iscoxmls(i).name),'r');
+    g = fopen(sprintf('xmls/%s',strrep(iscoxmls(i).name,'esco','masco')),'w');
+    while ~feof(f)
+        line = fgets(f);
+        if ~isempty(strfind(line,'chainLength="100000"'))
+            fprintf(g, '%s', strrep(line,'chainLength="100000"','chainLength="100000"'));            
+        elseif ~isempty(strfind(line,'ExactStructuredCoalescent'))
+            fprintf(g, '%s', strrep(line,'ExactStructuredCoalescent"','Masco"'));
+        elseif ~isempty(strfind(line,'esco.log'))
+            fprintf(g, '%s', strrep(strrep(line,'esco.log','masco.log'),'logEvery="100"','logEvery="100"'));
         elseif ~isempty(strfind(line,'name="timeStep">0.001'))
             fprintf(g, '%s', strrep(line,'name="timeStep">0.001','name="timeStep">0.01'));
         else

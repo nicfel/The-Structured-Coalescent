@@ -44,19 +44,19 @@
 			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="0">
 				<population spec='Population' type='@L' location="0"/>
 			</lineageSeedMultiple>
-			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="10">
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="1">
 				<population spec='Population' type='@L' location="0"/>
 			</lineageSeedMultiple>
-			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="5">
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="2">
 				<population spec='Population' type='@L' location="0"/>
 			</lineageSeedMultiple>
 			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="1">
 				<population spec='Population' type='@L' location="1"/>
 			</lineageSeedMultiple>
-			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="4">
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="0">
 				<population spec='Population' type='@L' location="1"/>
 			</lineageSeedMultiple>
-			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="8">
+			<lineageSeedMultiple spec='MultipleIndividuals' copies="1" time="1">
 				<population spec='Population' type='@L' location="2"/>
 			</lineageSeedMultiple>
         </initialState>

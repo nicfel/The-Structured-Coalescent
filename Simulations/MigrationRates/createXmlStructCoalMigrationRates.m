@@ -97,6 +97,27 @@ for i = 1 : length(tree_files)
 end
 
 
+%% creates MASCO files from ESCO files
+escoxmls = dir('xmls/*esco.xml');
+
+for i = 1 : length(escoxmls)
+    f = fopen(sprintf('xmls/%s',escoxmls(i).name),'r');
+    g = fopen(sprintf('xmls/%s',strrep(escoxmls(i).name,'esco','masco')),'w');
+    while ~feof(f)
+        line = fgets(f);
+        if ~isempty(strfind(line,'ExactStructuredCoalescent'))
+            fprintf(g, '%s', strrep(line,'ExactStructuredCoalescent','Masco'));
+        elseif ~isempty(strfind(line,'_esco.'))
+            fprintf(g, '%s', strrep(line,'_esco.','_masco.'));
+        elseif ~isempty(strfind(line,'exactDensity'))
+            fprintf(g, '%s', strrep(line,'exactDensity','mascoDensity'));
+        else
+            fprintf(g, '%s', line);
+        end
+    end
+    fclose(f);
+    fclose(g);
+end
 
 %% creates LISCO files from ESCO files
 escoxmls = dir('xmls/*esco.xml');

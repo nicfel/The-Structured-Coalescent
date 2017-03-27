@@ -121,6 +121,29 @@ for i = 1 : length(tree_files)
         fclose(f);
     end
 end
+%% make MASCO files
+% get all the LISCO files in the xml directory
+iscoxmls = dir('xmls/*lisco.xml');
+
+
+% convert each file such that it uses SISCO
+for i = 1 : length(iscoxmls)
+    f = fopen(sprintf('xmls/%s',iscoxmls(i).name),'r');
+    g = fopen(sprintf('xmls/%s',strrep(iscoxmls(i).name,'lisco','masco')),'w');
+    while ~feof(f)
+        line = fgets(f);
+        if ~isempty(strfind(line,'IndependentStructuredCoalescent'))
+            fprintf(g, '%s', strrep(line,'IndependentStructuredCoalescent"','Masco"'));
+        elseif ~isempty(strfind(line,'lisco.log'))
+            fprintf(g, '%s', strrep(line,'lisco.log','masco.log'));
+        else
+            fprintf(g, '%s', line);
+        end
+    end
+    fclose(f);
+    fclose(g);
+end   
+    
 
 %% make SISCO files
 % get all the LISCO files in the xml directory

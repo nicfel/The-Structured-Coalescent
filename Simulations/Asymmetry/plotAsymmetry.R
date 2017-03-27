@@ -39,16 +39,16 @@ for (i in seq(1,length(log),1)){
   t_sisco2 <- read.table(filename2, header=TRUE, sep="\t")
   t_sisco3 <- read.table(filename2, header=TRUE, sep="\t")
   
-  # Read in the LISCO *.logs
-  t_lisco1 <- read.table(gsub("sisco","lisco",filename1), header=TRUE, sep="\t")
-  t_lisco2 <- read.table(gsub("sisco","lisco",filename2), header=TRUE, sep="\t")
-  t_lisco3 <- read.table(gsub("sisco","lisco",filename3), header=TRUE, sep="\t")
+  # Read in the MASCO *.logs
+  t_masco1 <- read.table(gsub("sisco","masco",filename1), header=TRUE, sep="\t")
+  t_masco2 <- read.table(gsub("sisco","masco",filename2), header=TRUE, sep="\t")
+  t_masco3 <- read.table(gsub("sisco","masco",filename3), header=TRUE, sep="\t")
   
   # combine all tree runs after a burn in of 10%
-  t_lisco1 <- t_lisco1[-seq(1,ceiling(length(t_lisco1$migRates1)/10)), ]
-  t_lisco2 <- t_lisco2[-seq(1,ceiling(length(t_lisco2$migRates1)/10)), ]
-  t_lisco3 <- t_lisco3[-seq(1,ceiling(length(t_lisco3$migRates1)/10)), ]
-  t_lisco = rbind(t_lisco1,t_lisco2,t_lisco3) 
+  t_masco1 <- t_masco1[-seq(1,ceiling(length(t_masco1$migRates1)/10)), ]
+  t_masco2 <- t_masco2[-seq(1,ceiling(length(t_masco2$migRates1)/10)), ]
+  t_masco3 <- t_masco3[-seq(1,ceiling(length(t_masco3$migRates1)/10)), ]
+  t_masco = rbind(t_masco1,t_masco2,t_masco3) 
   
   t_sisco1 <- t_sisco1[-seq(1,ceiling(length(t_sisco1$migRates1)/10)), ]
   t_sisco2 <- t_sisco2[-seq(1,ceiling(length(t_sisco2$migRates1)/10)), ]
@@ -56,15 +56,15 @@ for (i in seq(1,length(log),1)){
   t_sisco = rbind(t_sisco1,t_sisco2,t_sisco3) 
   
   # calculate ess values
-  lisco_ess <- effectiveSize(t_lisco)
+  masco_ess <- effectiveSize(t_masco)
   sisco_ess <- effectiveSize(t_sisco)
   
   # Check if any ESS value calculated by the coda package is below 200
   # The first entry are the sample number, hence their ESS value is
   # not needed
-  if (min(lisco_ess[2:6])<200){
-    print("lisco ESS value to low")
-    print(sprintf("ESS value is %f for file %s",min(lisco_ess[2:6]),filename1))
+  if (min(masco_ess[2:6])<200){
+    print("masco ESS value to low")
+    print(sprintf("ESS value is %f for file %s",min(masco_ess[2:6]),filename1))
   }
   if (min(sisco_ess[2:6])<200){
     print("sisco ESS value to low")
@@ -77,10 +77,10 @@ for (i in seq(1,length(log),1)){
   asymmetry <- as.numeric(splitted[[1]][3])
   
   # get the ratios
-  c_ratio_lisco = t_lisco$coalRates1/t_lisco$coalRates2
+  c_ratio_masco = t_masco$coalRates1/t_masco$coalRates2
   c_ratio_sisco = t_sisco$coalRates1/t_sisco$coalRates2
   
-  m_ratio_lisco = t_lisco$migRates1/t_lisco$migRates2
+  m_ratio_masco = t_masco$migRates1/t_masco$migRates2
   m_ratio_sisco = t_sisco$migRates1/t_sisco$migRates2
   
   
@@ -90,38 +90,38 @@ for (i in seq(1,length(log),1)){
     # check if the coalescent or the migration rates were asymmetric
     if (splitted[[1]][2]=="coal"){
       ratios_tmp1 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(c_ratio_lisco),
-                                upper_lisco=quantile(c_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(c_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(c_ratio_sisco),
+                                mean_masco=quantile(c_ratio_masco,0.5),
+                                upper_masco=quantile(c_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(c_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(c_ratio_sisco,0.5),
                                 upper_sisco=quantile(c_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(c_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric coalescent rates symmetric migration rates",
                                 facet_posy="coalescent rate ratios")
       ratios_tmp2 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(m_ratio_lisco),
-                                upper_lisco=quantile(m_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(m_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(m_ratio_sisco),
+                                mean_masco=quantile(m_ratio_masco,0.5),
+                                upper_masco=quantile(m_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(m_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(m_ratio_sisco,0.5),
                                 upper_sisco=quantile(m_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(m_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric coalescent rates symmetric migration rates",
                                 facet_posy="migration rate ratios")
     }else{
       ratios_tmp1 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(c_ratio_lisco),
-                                upper_lisco=quantile(c_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(c_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(c_ratio_sisco),
+                                mean_masco=quantile(c_ratio_masco,0.5),
+                                upper_masco=quantile(c_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(c_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(c_ratio_sisco,0.5),
                                 upper_sisco=quantile(c_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(c_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric migration rates symmetric coalescent rates",
                                 facet_posy="coalescent rate ratios")
       ratios_tmp2 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(m_ratio_lisco),
-                                upper_lisco=quantile(m_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(m_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(m_ratio_sisco),
+                                mean_masco=quantile(m_ratio_masco,0.5),
+                                upper_masco=quantile(m_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(m_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(m_ratio_sisco,0.5),
                                 upper_sisco=quantile(m_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(m_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric migration rates symmetric coalescent rates",
@@ -133,38 +133,38 @@ for (i in seq(1,length(log),1)){
     
     if (splitted[[1]][2]=="coal"){
       ratios_tmp1 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(c_ratio_lisco),
-                                upper_lisco=quantile(c_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(c_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(c_ratio_sisco),
+                                mean_masco=quantile(c_ratio_masco,0.5),
+                                upper_masco=quantile(c_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(c_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(c_ratio_sisco,0.5),
                                 upper_sisco=quantile(c_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(c_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric coalescent rates symmetric migration rates",
                                 facet_posy="coalescent rate ratios")
       ratios_tmp2 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(m_ratio_lisco),
-                                upper_lisco=quantile(m_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(m_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(m_ratio_sisco),
+                                mean_masco=quantile(m_ratio_masco,0.5),
+                                upper_masco=quantile(m_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(m_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(m_ratio_sisco,0.5),
                                 upper_sisco=quantile(m_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(m_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric coalescent rates symmetric migration rates",
                                 facet_posy="migration rate ratios")
     }else{
       ratios_tmp1 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(c_ratio_lisco),
-                                upper_lisco=quantile(c_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(c_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(c_ratio_sisco),
+                                mean_masco=quantile(c_ratio_masco,0.5),
+                                upper_masco=quantile(c_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(c_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(c_ratio_sisco,0.5),
                                 upper_sisco=quantile(c_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(c_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric migration rates symmetric coalescent rates",
                                 facet_posy="coalescent rate ratios")
       ratios_tmp2 <- data.frame(asymmetry=as.numeric(splitted[[1]][3]),
-                                mean_lisco=mean(m_ratio_lisco),
-                                upper_lisco=quantile(m_ratio_lisco,0.975)[[1]],
-                                lower_lisco=quantile(m_ratio_lisco,0.025)[[1]],
-                                mean_sisco=mean(m_ratio_sisco),
+                                mean_masco=quantile(m_ratio_masco,0.5),
+                                upper_masco=quantile(m_ratio_masco,0.975)[[1]],
+                                lower_masco=quantile(m_ratio_masco,0.025)[[1]],
+                                mean_sisco=quantile(m_ratio_sisco,0.5),
                                 upper_sisco=quantile(m_ratio_sisco,0.975)[[1]],
                                 lower_sisco=quantile(m_ratio_sisco,0.025)[[1]],
                                 facet_posx="asymmetric migration rates symmetric coalescent rates",
@@ -187,11 +187,11 @@ for (i in seq(1,length(log),1)){
 
 
 p <- ggplot()+
-  geom_point(data=ratios, aes(x=asymmetry,y=mean_lisco,color="LISCO"), size=0.5) +
+  geom_point(data=ratios, aes(x=asymmetry,y=mean_masco,color="MASCO"), size=0.5) +
   geom_point(data=ratios, aes(x=asymmetry,y=mean_sisco,color="SISCO"), size=0.5) +
   facet_grid(facet_posy ~ facet_posx) + scale_y_log10() + scale_x_log10() +
   ylab("rate ratio") + xlab("asymmetry") +
-  scale_colour_manual("",values = c("LISCO" = col4, "SISCO" = col2)) + guides(colour = guide_legend(override.aes = list(size=2)))
+  scale_colour_manual("",values = c("MASCO" = col4, "SISCO" = col2)) + guides(colour = guide_legend(override.aes = list(size=2)))
 
 # make the data frame for the red dotted line
 d <- data.frame(x=c(0.01, 1, 0.01, 1, 0.01, 1, 0.01, 1),
@@ -219,14 +219,14 @@ ggsave(plot=p,"../../text/figures/Asymmetry/Asymmetry.eps",width=10, height=6)
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # plot the rate ratios with confidence intervals as in indivual
-# figures for both LISCO and SISCO
+# figures for both MASCO and SISCO
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-p_lisco <- ggplot()+
-  geom_pointrange(data=ratios, aes(x=asymmetry, y=mean_lisco, ymin=lower_lisco, ymax=upper_lisco), color=col4, size=0.01) +
-  geom_point(data=ratios, aes(x=asymmetry,y=mean_lisco), color="black", size=0.01) +
+p_masco <- ggplot()+
+  geom_pointrange(data=ratios, aes(x=asymmetry, y=mean_masco, ymin=lower_masco, ymax=upper_masco), color=col4, size=0.01) +
+  geom_point(data=ratios, aes(x=asymmetry,y=mean_masco), color="black", size=0.01) +
   facet_grid(facet_posy ~ facet_posx) + scale_y_log10() + scale_x_log10() +
   ylab("rate ratio") + xlab("asymmetry")
 
@@ -253,13 +253,13 @@ d <- data.frame(x=c(0.01, 1, 0.01, 1, 0.01, 1, 0.01, 1),
                              "migration rate ratios","migration rate ratios"))
 
 # plot the red dotten line
-p_lisco <- p_lisco + geom_line(data=d,aes(x=x,y=y), color="red",linetype="dashed") +
+p_masco <- p_masco + geom_line(data=d,aes(x=x,y=y), color="red",linetype="dashed") +
   facet_grid(facet_posy ~ facet_posx)
 p_sisco <- p_sisco + geom_line(data=d,aes(x=x,y=y), color="red",linetype="dashed") +
   facet_grid(facet_posy ~ facet_posx)
-plot(p_lisco)
+plot(p_masco)
 plot(p_sisco)
-ggsave(plot=p_lisco,"../../text/figures/Asymmetry/AsymmetryConfidenceLisco.eps",width=10, height=6)
+ggsave(plot=p_masco,"../../text/figures/Asymmetry/AsymmetryConfidenceLisco.eps",width=10, height=6)
 ggsave(plot=p_sisco,"../../text/figures/Asymmetry/AsymmetryConfidenceSisco.eps",width=10, height=6)
 
 

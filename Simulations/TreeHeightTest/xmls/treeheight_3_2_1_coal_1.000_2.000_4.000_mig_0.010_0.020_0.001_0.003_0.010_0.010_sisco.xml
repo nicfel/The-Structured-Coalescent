@@ -9,7 +9,7 @@
     </data>
     
     <trait spec='beast.evolution.tree.TraitSet' id='timeTraitSet' traitname="date-backward"
-        value="inv0_0=0,inv1_0=10,inv2_0=5,inv0_1=1,inv1_1=4,inv0_2=8">
+        value="inv0_0=0,inv1_0=1,inv2_0=2,inv0_1=1,inv1_1=0,inv0_2=1">
         <taxa spec='TaxonSet' alignment='@sequences'/>
     </trait>
 

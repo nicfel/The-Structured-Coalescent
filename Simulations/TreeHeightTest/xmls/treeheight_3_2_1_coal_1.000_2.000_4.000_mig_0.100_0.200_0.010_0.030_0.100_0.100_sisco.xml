@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.structuredCoalescent.distribution:beast.structuredCoalescent.logger:beast.structuredCoalescent.operator:beast.structuredCoalescent.model:beast.structuredCoalescent.operators:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+    <data id="sequences" name="alignment">
+		<sequence id="inv0_0" taxon="inv0_0" totalcount="4" value="??"/>
+		<sequence id="inv1_0" taxon="inv1_0" totalcount="4" value="??"/>
+		<sequence id="inv2_0" taxon="inv2_0" totalcount="4" value="??"/>
+		<sequence id="inv0_1" taxon="inv0_1" totalcount="4" value="??"/>
+		<sequence id="inv1_1" taxon="inv1_1" totalcount="4" value="??"/>
+		<sequence id="inv0_2" taxon="inv0_2" totalcount="4" value="??"/>
+    </data>
+    
+    <trait spec='beast.evolution.tree.TraitSet' id='timeTraitSet' traitname="date-backward"
+        value="inv0_0=0,inv1_0=1,inv2_0=2,inv0_1=1,inv1_1=0,inv0_2=1">
+        <taxa spec='TaxonSet' alignment='@sequences'/>
+    </trait>
+
+
+    <run id="mcmc" spec="MCMC" chainLength="1000000">
+        <state id="state" storeEvery="5000">
+            <tree id="tree" name="stateNode">
+                <trait idref="timeTraitSet"/>
+                <taxonset spec="TaxonSet" alignment='@sequences'/>
+            </tree>
+            <parameter id="coalRates" name="stateNode">1.0 2.0 4.0</parameter>
+            <parameter id="migRates" name="stateNode">0.1000 0.2000 0.0100 0.0300 0.1000 0.1000</parameter>
+        </state>
+
+
+        <init id="RandomTree.t:sequences" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@tree" taxa="@sequences">
+            <populationModel id="ConstantPopulation" spec="ConstantPopulation">
+                <parameter id="randomPopSize" name="popSize">100</parameter>
+            </populationModel>
+        </init>
+        
+        
+        
+        <distribution id="posterior" spec="util.CompoundDistribution">
+            <distribution id="prior" spec="util.CompoundDistribution">
+                <!-- ARUDSIR Priors-->
+            </distribution>
+            <distribution id="likelihood" spec="util.CompoundDistribution">
+                <distribution id="coalescent" spec="ApproximateStructuredCoalescent" dim="3">
+                    <structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+                    <coalescentRates idref="coalRates"/>
+                    <migrationRates idref="migRates"/>
+                    <parameter id="epi.timeStep" name="timeStep">0.01</parameter>
+                </distribution>
+            </distribution>
+        </distribution>
+        
+        <operator id="CoalescentConstantTreeScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0" rootOnly="true"/>
+        <operator id="CoalescentConstantUniformOperator.t:sequences" spec="Uniform" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:sequences" spec="SubtreeSlide" tree="@tree" optimise="true" weight="30.0"/>
+        <operator id="CoalescentConstantNarrow.t:sequences" spec="Exchange" tree="@tree" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:sequences" spec="Exchange" isNarrow="false" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:sequences" spec="WilsonBalding" tree="@tree" weight="3.0"/>
+        
+        <logger id="probtreelog.unconditionals" fileName="treeheight_3_2_1_coal_1.000_2.000_4.000_mig_0.100_0.200_0.010_0.030_0.100_0.100_sisco.trees" logEvery="1000" mode="tree">
+            <log id="logTrees" spec="StructuredTreeLogger" tree="@tree" approximateDensity="@coalescent"  maxState="false" conditionalStateProbs="false"/>
+        </logger>
+        <logger id="tracelog" fileName="treeheight_3_2_1_coal_1.000_2.000_4.000_mig_0.100_0.200_0.010_0.030_0.100_0.100_sisco.log" logEvery="100" model="@posterior" sanitiseHeaders="true" sort="smart">
+            <log idref="posterior"/>
+            <log id="tree_height" spec="beast.evolution.tree.TreeHeightLogger" tree="@tree"/>
+        </logger>
+        <logger id="screenlog" logEvery="1000">
+            <log idref="posterior"/>
+        </logger>
+    </run>
+</beast>

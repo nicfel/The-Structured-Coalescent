@@ -4,7 +4,7 @@ This folder contains everything needed to recreate the results section in the te
 # Asymmetry
 
 
-Contains all needed scripts to generate and analyze the results of the **Estimation of rate asymmetries** section. The number of files is too large (28000 files) to provide them on git.
+Contains all needed scripts to generate and analyze the results of the **Estimation of rate asymmetries** section. The number of files is too large to provide them on git.
 
 # JointStateProbabilties
 
@@ -16,7 +16,7 @@ Contains all needed scripts to generate and analyze the results of the **Estimat
 
 # OneState
 
-This folder is also not part of the paper, but it is an easy sanity check for both the equations of LISCO and SISCO as well as their implementation. It essentially contains files that compare the sampled tree heights under the standard unstructured coalescent model in BEAST2 as well as the sampled tree heights using LISCO and SISCO for m=1
+This folder is not part of the paper, but it is an easy sanity check for the equations of MASCO, LISCO and SISCO as well as their implementation. It essentially contains files that compare the sampled tree heights under the standard unstructured coalescent model in BEAST2 as well as the sampled tree heights using MASCO, LISCO and SISCO for m=1
 
 # RootStateProbabilities
 
@@ -28,7 +28,7 @@ Contains all needed scripts to generate and analyze the results of the **Samplin
 
 # TreeHeightTest
 
-Contains all needed scripts to generate and analyze the results of the **Tree height distributions under the structured co-alescent and its approximations** section. The relatively low number of files allows to put them of gitlab. Note that we use the standard BEAST2 operators to infer the tree heights using BASTA and not the MultiTypeTree operators. This we do because the MultiTypeTree operators use the migration rates to propose new trees while we are interested in what the probability distribution is over trees and not how efficient the operators work
+Contains all needed scripts to generate and analyze the results of the **Tree height distributions under the structured co-alescent and its approximations** section. The relatively low number of files allows to put them of gitlab. Note that we use the standard BEAST2 operators to infer the tree heights using BASTA and not the MultiTypeTree operators. This we do, because the MultiTypeTree operators use the migration rates to propose new trees while we are interested in what the probability distribution is over trees and not how efficient the operators propose new steps
 
 # Versions used
 
@@ -39,4 +39,5 @@ Contains all needed scripts to generate and analyze the results of the **Tree he
 
 # How to run the xmls
 
-All the xmls with the ending *esco.xml, \*lisco.xml and \*sisco.xml require the esco.jar from the /jar/ folder to run.
+All the xmls with the ending \*esco.xml, \*masco.xml, \*lisco.xml and \*sisco.xml require the esco.jar from the /jar/ folder to run.
+

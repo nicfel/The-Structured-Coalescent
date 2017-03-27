@@ -23,6 +23,7 @@ import beast.evolution.tree.Tree;
 import beast.structuredCoalescent.distribution.ApproximateStructuredCoalescent;
 import beast.structuredCoalescent.distribution.ExactStructuredCoalescent;
 import beast.structuredCoalescent.distribution.IndependentStructuredCoalescent;
+import beast.structuredCoalescent.distribution.Masco;
 
 
 /**
@@ -38,6 +39,9 @@ public class StructuredTreeLogger extends Tree implements Loggable {
 			"A deterministic epidemiological model");
 	public Input<ApproximateStructuredCoalescent> approximateInput = new Input<ApproximateStructuredCoalescent>(
 			"approximateDensity",
+			"A deterministic epidemiological model");
+	public Input<Masco> mascoInput = new Input<Masco>(
+			"mascoDensity",
 			"A deterministic epidemiological model");	
 	
     public Input<Tree> treeInput = new Input<Tree>("tree", "tree to be logged", Validate.REQUIRED);
@@ -103,6 +107,8 @@ public class StructuredTreeLogger extends Tree implements Loggable {
         	type = independentInput.get().getType();
         else if(approximateInput.get()!=null)
         	type = approximateInput.get().getType();
+        else if(mascoInput.get()!=null)
+        	type = mascoInput.get().getType();
         else
         	System.err.println("PROBLEM IN STRUCTURED LOGGER");
         
@@ -115,6 +121,8 @@ public class StructuredTreeLogger extends Tree implements Loggable {
         	states = independentInput.get().states;
         else if(approximateInput.get()!=null)
         	states = approximateInput.get().states;
+        else if(mascoInput.get()!=null)
+        	states = mascoInput.get().states;
         
         System.out.println(states);
         System.exit(0);
@@ -137,7 +145,9 @@ public class StructuredTreeLogger extends Tree implements Loggable {
         	states = independentInput.get().states;
         else if(approximateInput.get()!=null)
         	states = approximateInput.get().states;
-        
+        else if(mascoInput.get()!=null)
+        	states = mascoInput.get().states;
+       
 //        System.out.println(states);
 //        System.exit(0);
 
@@ -152,7 +162,9 @@ public class StructuredTreeLogger extends Tree implements Loggable {
         else if(independentInput.get()!=null)
         	independentInput.get().calculateLogP();
         else if(approximateInput.get()!=null)
-        	approximateInput.get().calculateLogP();;
+        	approximateInput.get().calculateLogP();
+        else if(mascoInput.get()!=null)
+        	mascoInput.get().calculateLogP();
 
     	
     	
@@ -218,6 +230,8 @@ public class StructuredTreeLogger extends Tree implements Loggable {
 		        	stateProbs = independentInput.get().getStateProb(node.getNr());
 		        else if(approximateInput.get()!=null)
 		        	stateProbs = approximateInput.get().getStateProb(node.getNr());
+		        else if(mascoInput.get()!=null)
+		        	stateProbs = mascoInput.get().getStateProb(node.getNr());
 
 		        
 		        
@@ -241,6 +255,8 @@ public class StructuredTreeLogger extends Tree implements Loggable {
 		        	stateProbs = independentInput.get().getStateProb(node.getNr());
 		        else if(approximateInput.get()!=null)
 		        	stateProbs = approximateInput.get().getStateProb(node.getNr());
+		        else if(mascoInput.get()!=null)
+		        	stateProbs = mascoInput.get().getStateProb(node.getNr());
 
 		        buf.append(String.format("%d", stateProbs.argmax() ));
 		        buf.append(']');        		

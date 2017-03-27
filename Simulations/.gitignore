@@ -1,0 +1,4 @@
+# ignore the following directories
+/esco/bin/
+/SamplingBias_old/
+/NodeHeightEstimation/

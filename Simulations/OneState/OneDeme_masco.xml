@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><beast beautitemplate='Standard' beautistatus='' namespace="beast.core:beast.evolution.alignment:beast.structuredCoalescent.distribution:beast.structuredCoalescent.logger:beast.structuredCoalescent.operator:beast.structuredCoalescent.model:beast.structuredCoalescent.operators:beast.evolution.tree.coalescent:beast.core.util:beast.evolution.nuc:beast.evolution.operators:beast.evolution.sitemodel:beast.evolution.substitutionmodel:beast.evolution.likelihood" version="2.0">
+    <data id="sequences" name="alignment">
+		<sequence id="inv0_0" taxon="inv0_0" totalcount="4" value="??"/>
+		<sequence id="inv1_0" taxon="inv1_0" totalcount="4" value="??"/>
+		<sequence id="inv2_0" taxon="inv2_0" totalcount="4" value="??"/>
+		<sequence id="inv3_0" taxon="inv3_0" totalcount="4" value="??"/>
+		<sequence id="inv4_0" taxon="inv4_0" totalcount="4" value="??"/>
+    </data>
+    
+    <trait spec='beast.evolution.tree.TraitSet' id='timeTraitSet' traitname="date-backward"
+        value="inv0_0=0,inv1_0=0,inv2_0=0,inv3_0=0,inv4_0=0">
+        <taxa spec='TaxonSet' alignment='@sequences'/>
+    </trait>
+
+
+    <run id="mcmc" spec="MCMC" chainLength="1000000">
+        <state id="state" storeEvery="5000">
+            <tree id="tree" name="stateNode">
+                <trait idref="timeTraitSet"/>
+                <taxonset spec="TaxonSet" alignment='@sequences'/>
+            </tree>
+            <parameter id="coalRates" name="stateNode">1.0 2.0</parameter>
+            <parameter id="migRates" name="stateNode">0 0</parameter>
+        </state>
+
+
+        <init id="RandomTree.t:sequences" spec="beast.evolution.tree.RandomTree" estimate="false" initial="@tree" taxa="@sequences">
+            <populationModel id="ConstantPopulation" spec="ConstantPopulation">
+                <parameter id="randomPopSize" name="popSize">1</parameter>
+            </populationModel>
+        </init>
+        
+        
+        
+        <distribution id="posterior" spec="util.CompoundDistribution">
+            <distribution id="prior" spec="util.CompoundDistribution">
+            </distribution>
+            <distribution id="likelihood" spec="util.CompoundDistribution">
+                <distribution id="coalescent" spec="Masco" dim="2" proportionalTimeStep="true">
+                    <structuredTreeIntervals spec="StructuredTreeIntervals" id="TreeIntervals" tree="@tree"/>
+                    <coalescentRates idref="coalRates"/>
+                    <migrationRates idref="migRates"/>
+                    <parameter id="epi.timeStep" name="timeStep">1</parameter>
+                </distribution>
+            </distribution>
+        </distribution>
+        
+        <operator id="CoalescentConstantTreeScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantTreeRootScaler.t:sequences" spec="ScaleOperator" scaleFactor="0.8" tree="@tree" weight="3.0" rootOnly="true"/>
+        <operator id="CoalescentConstantUniformOperator.t:sequences" spec="Uniform" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantSubtreeSlide.t:sequences" spec="SubtreeSlide" tree="@tree" optimise="true" weight="30.0"/>
+        <operator id="CoalescentConstantNarrow.t:sequences" spec="Exchange" tree="@tree" weight="15.0"/>
+        <operator id="CoalescentConstantWide.t:sequences" spec="Exchange" isNarrow="false" tree="@tree" weight="3.0"/>
+        <operator id="CoalescentConstantWilsonBalding.t:sequences" spec="WilsonBalding" tree="@tree" weight="3.0"/>
+        
+        <logger id="tracelog" fileName="OneDeme_masco.log" logEvery="100" model="@posterior" sanitiseHeaders="true" sort="smart">
+            <log idref="posterior"/>
+            <log id="tree_height" spec="beast.evolution.tree.TreeHeightLogger" tree="@tree"/>
+        </logger>
+        <logger id="screenlog" logEvery="1000">
+            <log idref="posterior"/>
+        </logger>
+    </run>
+</beast>
